@@ -8,18 +8,41 @@
 
 #import "AppDelegate.h"
 
+#import "QlNetworkHelper.h"
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
-
++ (instancetype)appDelegate{
+    return (AppDelegate *)[UIApplication sharedApplication].delegate;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _rootViewController = [[BaseTabBarController alloc] init];
+    self.window.rootViewController = _rootViewController;
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    self.curNetworkStatus = @"WiFi";//默认状态为wifi
+    [self registerReachability];
     return YES;
 }
+- (void)registerReachability{
+    //监测网络
+    [[QlNetworkHelper sharedManager] networkReaching];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(netStatusChangedValues:) name:@"NetReachabilityStatusChanged" object:nil];
+}
 
+- (void)netStatusChangedValues:(NSNotification *)notify{
+    NSDictionary *dic = notify.userInfo;
+    NSString *networkStatus = [dic objectForKey:@"networkStatus"];
+    self.curNetworkStatus = networkStatus;
+    NSString * string = [NSString stringWithFormat:@"当前网络状态为%@",networkStatus];
+    //    UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"网络状态" message:string delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
+    //    [alert show];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

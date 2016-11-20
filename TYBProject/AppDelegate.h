@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BaseTabBarController.h"
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
-
+@property (assign, nonatomic) NSString *curNetworkStatus;//当前网络状态
+@property (nonatomic, strong) BaseTabBarController *rootViewController;
++ (instancetype)appDelegate;
 @end
 
